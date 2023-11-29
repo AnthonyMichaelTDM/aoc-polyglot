@@ -10,24 +10,32 @@ jobs:
         runs-on: ubuntu-latest
         name: CI
         steps:
-            - uses: actions/checkout@v3
-            - name: Set up cargo cache
-              uses: actions/cache@v3
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Set up Rust
+              run: |
+                  rustup install stable
+                  rustup update
+                  rustup component add clippy
+            - uses: actions/cache@v3
               continue-on-error: false
               with:
-                path: |
-                    ~/.cargo/bin/
-                    ~/.cargo/registry/index/
-                    ~/.cargo/registry/cache/
-                    ~/.cargo/git/db/
-                    target/
-                key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-                restore-keys: ${{ runner.os }}-cargo-
-            - name: cargo test
-              run: cargo test
-            # uncomment to enable clippy linter
-            # - name: cargo clippy
-            #   run: cargo clippy -- -D warnings
-            # uncomment to enable format linter
-            # - name: cargo fmt
-            #   run: cargo fmt --check
+                  path: |
+                      ~/.cargo/bin/
+                      ~/.cargo/registry/index/
+                      ~/.cargo/registry/cache/
+                      ~/.cargo/git/db/
+                      .cargo/.build/
+                  key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+                  restore-keys: ${{ runner.os }}-cargo
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: 3.11
+                  cache: pip
+            - name: Set up Zig
+              uses: goto-bus-stop/setup-zig@v2
+            - name: Run Tests
+              run: test.sh
+            - name: Run Linters
+              run: lint.sh

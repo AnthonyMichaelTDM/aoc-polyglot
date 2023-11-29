@@ -9,3 +9,6 @@ time = "run --quiet --release -- all --release --time"
 
 [env]
 AOC_YEAR = "2022"
+
+[build]
+target-dir = ".cargo/.build"
