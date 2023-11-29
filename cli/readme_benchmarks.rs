@@ -1,5 +1,7 @@
 /// Module that updates the readme me with timing information.
 /// The approach taken is similar to how `aoc-readme-stars` handles this.
+///
+/// TODO: this all needs to be reimplemented to support multiple languages (and years).
 /*
 MIT License
 
