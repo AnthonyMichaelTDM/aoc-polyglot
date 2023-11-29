@@ -1,9 +1,13 @@
 [package]
 name = "advent_of_code"
-version = "0.9.0"
-authors = ["Felix Spöttel <1682504+fspoettel@users.noreply.github.com>"]
+version = "0.0.0"
+authors = [
+    # Author of this fork
+    "Anthony Rubick <68485672+AnthonyMichaelTDM@users.noreply.github.com>",
+    # made the project this is based on
+    "Felix Spöttel <1682504+fspoettel@users.noreply.github.com>",
+]
 edition = "2021"
-default-run = "advent_of_code"
 publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
