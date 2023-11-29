@@ -12,6 +12,9 @@ def main() -> None:
         input = f.read()
 
     print(f'{part_one(input)}')
+
+    print("\n=================\n") # separate the two parts
+
     print(f'{part_two(input)}')
 
 if __name__ == '__main__':

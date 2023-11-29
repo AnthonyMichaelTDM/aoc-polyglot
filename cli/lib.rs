@@ -16,8 +16,8 @@ pub const ANSI_RESET: &str = "\x1b[0m";
 pub fn get_challenge_dir(day: u8, year: u16) -> PathBuf {
     PathBuf::from_iter([
         env!("CARGO_MANIFEST_DIR"),
-        &format!("day{day:02}"),
         &format!("{year}"),
+        &format!("day{day:02}"),
     ])
 }
 
@@ -40,6 +40,7 @@ fn get_year_from_env() -> Option<u16> {
 }
 
 #[derive(Clone, Debug)]
+#[repr(u8)]
 pub enum Part {
     One = 1,
     Two = 2,

@@ -23,12 +23,6 @@ pub enum SupportedLanguage {
     Zig,
 }
 
-impl SupportedLanguage {
-    pub fn iter() -> impl Iterator<Item = Self> {
-        vec![Self::Rust, Self::Python, Self::Zig].into_iter()
-    }
-}
-
 impl Display for SupportedLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -139,9 +133,8 @@ impl Solution for SupportedLanguage {
         // create the challenge directory
         let challenge_dir = self.get_working_dir(day, year).err().ok_or_else(|| {
             anyhow::anyhow!(
-                "Solution directory already exists for day {} of year {}",
-                day,
-                year
+                "{lang} solution directory already exists for day {day} of year {year} at",
+                lang = self.to_string(),
             )
         })?;
         std::fs::create_dir_all(&challenge_dir)?;
@@ -158,7 +151,7 @@ impl Solution for SupportedLanguage {
         // copy folder
         let mut options: fs_extra::dir::CopyOptions = fs_extra::dir::CopyOptions::new();
         options.copy_inside = true;
-        fs_extra::dir::copy(template_dir, &challenge_dir, &options)?;
+        fs_extra::dir::copy(template_dir, get_challenge_dir(day, year), &options)?;
 
         // if needed, fill out .tera templates
         //  set up the context for the templates
@@ -174,6 +167,8 @@ impl Solution for SupportedLanguage {
         //  language specific templates
         match self {
             Self::Rust => {
+                // delete the template Cargo.toml.tera we copied
+                std::fs::remove_file(challenge_dir.join("Cargo.toml.tera"))?;
                 // render cargo.toml
                 let cargo_toml = TERA.render("rust/Cargo.toml.tera", &context)?;
                 let mut file = std::fs::File::create(challenge_dir.join("Cargo.toml"))?;

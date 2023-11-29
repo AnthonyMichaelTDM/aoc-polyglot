@@ -16,9 +16,9 @@ pub fn main() void {
 
     var part_one_result = part_one(input);
     std.debug.print("{}\n", .{part_one_result});
-
+    sdt.debug.print("\n=================\n"); // separate the parts
     var part_two_result = part_two(input);
-    std.debug.print("{}", .{part_two_result});
+    std.debug.print("{}\n", .{part_two_result});
 }
 
 test "part 1" {

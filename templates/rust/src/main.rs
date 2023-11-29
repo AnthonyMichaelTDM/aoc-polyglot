@@ -31,27 +31,7 @@ fn main() {
     let input = include_str!("../../input.txt");
 
     // run the parts
-    println!("{}\n", part_one(&input).unwrap_or_default());
+    println!("{}", part_one(&input).unwrap_or_default());
+    println!("\n=================\n"); // separate the parts
     println!("{}", part_two(&input).unwrap_or_default());
-
-    run_part(
-        part_one,
-        &input,
-        {
-            {
-                DAY
-            }
-        },
-        1,
-    );
-    run_part(
-        part_two,
-        &input,
-        {
-            {
-                DAY
-            }
-        },
-        2,
-    );
 }

@@ -28,6 +28,8 @@ impl Display for AocCommandError {
     }
 }
 
+impl std::error::Error for AocCommandError {}
+
 /// check if the aoc-cli is callable.
 ///
 /// # Errors
