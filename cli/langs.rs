@@ -129,6 +129,43 @@ impl Solution for SupportedLanguage {
         Ok(output)
     }
 
+    fn test(&self, day: u8, year: u16) -> Result<String> {
+        let mut command;
+        match self {
+            Self::Rust => {
+                command = Command::new("cargo");
+                command.args(["test"]);
+            }
+            Self::Python => {
+                command = Command::new("pytest");
+            }
+            Self::Zig => {
+                command = Command::new("zig");
+                command.args(["test"]);
+            }
+        }
+
+        let working_dir = self.get_working_dir(day, year).map_err(|_| {
+            anyhow::anyhow!(
+                "Could not find solution directory for day {} of year {}",
+                day,
+                year
+            )
+        })?;
+
+        // run the command in the solution directory
+        let output = command
+            .current_dir(working_dir)
+            .stderr(Stdio::inherit())
+            .stdout(Stdio::piped())
+            .output()?;
+
+        // convert the output to a string
+        let output = String::from_utf8(output.stdout)?;
+
+        Ok(output)
+    }
+
     fn scaffold(&self, day: u8, year: u16) -> Result<()> {
         // create the challenge directory
         let challenge_dir = self.get_working_dir(day, year).err().ok_or_else(|| {
@@ -204,6 +241,13 @@ pub trait Solution {
     ///
     /// returns an error if the solution directory does not exist, or if there is an error running the solution.
     fn run(&self, day: u8, year: u16) -> Result<String>;
+    /// run the tests for the solution for a given day and year.
+    /// (run the solution with example inputs)
+    ///
+    /// # Errors
+    ///
+    /// returns an error if the solution directory does not exist, or if there is an error running the solution.
+    fn test(&self, day: u8, year: u16) -> Result<String>;
     /// scaffold the solution for a given day and year, basically creating a project template for the solution.
     ///
     /// # Errors

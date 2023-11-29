@@ -40,23 +40,33 @@ pub enum AppArguments {
         day: u8,
         #[arg(short, long)]
         year: Option<u16>,
-        #[arg(long, help = "whether to use real inputs or not")]
+        #[arg(
+            long,
+            help = "whether to use real inputs or not (set to false to run tests)"
+        )]
         release: bool,
         #[arg(long, help = "whether to time the solution or not")]
         time: bool,
         #[arg(short, long, help = "language to run solution of")]
         language: SupportedLanguage,
-        #[arg(short, long)]
+        #[arg(
+            short,
+            long,
+            help = "use aoc_cli to submit the solution, runs with real inputs and does not time the solution"
+        )]
         submit: Option<Part>,
     },
     All {
         #[arg(short, long)]
         year: Option<u16>,
-        #[arg(long, help = "whether to use real inputs or not")]
+        #[arg(
+            long,
+            help = "whether to use real inputs or not (set to false to run tests)"
+        )]
         release: bool,
         #[arg(
             long,
-            help = "whether to time the solution or not, if specified will update the README.md file"
+            help = "whether to time the solution or not, runs with real inputs and does not time the solution"
         )]
         time: bool,
         #[arg(
