@@ -1,5 +1,28 @@
 /// Module that updates the readme me with timing information.
 /// The approach taken is similar to how `aoc-readme-stars` handles this.
+/*
+MIT License
+
+Copyright (c) 2021 Felix Spoettel
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 use std::{fs, io};
 
 static MARKER: &str = "<!--- benchmarking table --->";
@@ -12,7 +35,7 @@ pub enum Error {
 
 impl From<std::io::Error> for Error {
     fn from(e: std::io::Error) -> Self {
-        Error::IO(e)
+        Self::IO(e)
     }
 }
 
@@ -29,7 +52,8 @@ pub struct TablePosition {
     pos_end: usize,
 }
 
-#[must_use] pub fn get_path_for_bin(day: usize) -> String {
+#[must_use]
+pub fn get_path_for_bin(day: usize) -> String {
     let day_padded = format!("{day:02}");
     format!("./src/bin/{day_padded}.rs")
 }
@@ -92,6 +116,14 @@ fn update_content(s: &mut String, timings: Vec<Timings>, total_millis: f64) -> R
     Ok(())
 }
 
+/// Updates the readme with the given timings.
+/// The timings are expected to be sorted by day.
+///
+/// # Errors
+///
+/// This function will return an error if the marker is not present in the readme.
+/// or the README could not be read or written.
+///
 pub fn update(timings: Vec<Timings>, total_millis: f64) -> Result<(), Error> {
     let path = "README.md";
     let mut readme = String::from_utf8_lossy(&fs::read(path)?).to_string();
@@ -100,7 +132,7 @@ pub fn update(timings: Vec<Timings>, total_millis: f64) -> Result<(), Error> {
     Ok(())
 }
 
-#[cfg(feature = "test_lib")]
+#[cfg(test)]
 mod tests {
     use super::{update_content, Timings, MARKER};
 
@@ -137,29 +169,29 @@ mod tests {
     #[test]
     #[should_panic]
     fn errors_if_too_many_markers_present() {
-        let mut s = format!("{} {} {}", MARKER, MARKER, MARKER);
+        let mut s = format!("{MARKER} {MARKER} {MARKER}");
         update_content(&mut s, get_mock_timings(), 190.0).unwrap();
     }
 
     #[test]
     fn updates_empty_benchmarks() {
-        let mut s = format!("foo\nbar\n{}{}\nbaz", MARKER, MARKER);
+        let mut s = format!("foo\nbar\n{MARKER}{MARKER}\nbaz");
         update_content(&mut s, get_mock_timings(), 190.0).unwrap();
-        assert_eq!(s.contains("## Benchmarks"), true);
+        assert!(s.contains("## Benchmarks"));
     }
 
     #[test]
     fn updates_existing_benchmarks() {
-        let mut s = format!("foo\nbar\n{}{}\nbaz", MARKER, MARKER);
+        let mut s = format!("foo\nbar\n{MARKER}{MARKER}\nbaz");
         update_content(&mut s, get_mock_timings(), 190.0).unwrap();
         update_content(&mut s, get_mock_timings(), 190.0).unwrap();
-        assert_eq!(s.matches(MARKER).collect::<Vec<&str>>().len(), 2);
-        assert_eq!(s.matches("## Benchmarks").collect::<Vec<&str>>().len(), 1);
+        assert_eq!(s.matches(MARKER).count(), 2);
+        assert_eq!(s.matches("## Benchmarks").count(), 1);
     }
 
     #[test]
     fn format_benchmarks() {
-        let mut s = format!("foo\nbar\n{}\n{}\nbaz", MARKER, MARKER);
+        let mut s = format!("foo\nbar\n{MARKER}\n{MARKER}\nbaz");
         update_content(&mut s, get_mock_timings(), 190.0).unwrap();
         let expected = [
             "foo",

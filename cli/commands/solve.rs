@@ -1,6 +1,22 @@
 use std::process::{Command, Stdio};
 
-pub fn handle(day: u8, release: bool, time: bool, submit_part: Option<u8>) {
+use crate::{langs::SupportedLanguage, Part};
+
+/// Handle the `solve` subcommand.
+///
+/// # Errors
+///
+/// TODO: Document errors
+pub fn handle(
+    day: u8,
+    year: u16,
+    language: SupportedLanguage,
+    release: bool,
+    time: bool,
+    submit_part: Option<Part>,
+) -> anyhow::Result<()> {
+    todo!();
+
     let day_padded = format!("{day:02}");
 
     let mut cmd_args = vec!["run".to_string(), "--bin".to_string(), day_padded];
@@ -24,8 +40,7 @@ pub fn handle(day: u8, release: bool, time: bool, submit_part: Option<u8>) {
         .args(&cmd_args)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
-        .spawn()
-        .unwrap();
+        .spawn()?;
 
-    cmd.wait().unwrap();
+    cmd.wait()?;
 }
