@@ -6,12 +6,27 @@ env:
     CARGO_TERM_COLOR: always
 
 jobs:
-    test:
+    test_cli:
         runs-on: ubuntu-latest
-        name: CI
+        name: CI_CLI
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
+            - name: Set up Rust
+              run: |
+                  rustup install stable
+                  rustup update
+                  rustup component add clippy
+            - name: Test And Lint
+              run: |
+                  cargo test --all
+                  cargo clippy --all -- -D warnings
+    test_solutions:
+        runs-on: ubuntu-latest
+        name: CI_SOLUTIONS
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
             - name: Set up Rust
               run: |
                   rustup install stable
