@@ -24,6 +24,6 @@ clap = { version = "4.4", features = ["derive"] }
 anyhow = "1.0"
 tera = "1.19"
 lazy_static = "1.4"
-chrono = "0.4"
+time = { version = "0.3", features = ["formatting"] }
 fs_extra = "1.3"
 tap = "1.0"

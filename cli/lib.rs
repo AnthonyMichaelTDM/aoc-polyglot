@@ -1,6 +1,6 @@
 use std::{fmt::Display, path::PathBuf, str::FromStr};
 
-use chrono::Datelike;
+use time::Month;
 
 pub mod aoc_cli;
 pub mod commands;
@@ -26,8 +26,8 @@ pub fn get_challenge_dir(day: u8, year: u16) -> PathBuf {
 #[must_use]
 pub fn get_year() -> u16 {
     get_year_from_env().unwrap_or_else(|| {
-        let now = chrono::Local::now();
-        if now.month() == 12 {
+        let now = time::OffsetDateTime::now_utc();
+        if now.month() == Month::December {
             u16::try_from(now.year().clamp(0, i32::from(u16::MAX))).unwrap_or_default()
         } else {
             u16::try_from(now.year().clamp(0, i32::from(u16::MAX))).unwrap_or_default() - 1
