@@ -10,6 +10,7 @@ dependencies = [
  "clap",
  "fs_extra",
  "lazy_static",
+ "serde_json",
  "tap",
  "tera",
  "time",
