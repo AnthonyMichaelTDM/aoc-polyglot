@@ -94,7 +94,7 @@ For example, running a benchmarked, optimized execution of day 1 would look like
 
 #### Submitting solutions
 
-> **Note**  
+> [!IMPORTANT]  
 > This command requires [installing the aoc-cli crate](#configure-aoc-cli-integration).
 
 In order to submit part of a solution for checking, append the `--submit <part>` option to the `solve` command.
@@ -128,8 +128,6 @@ In order to generate a benchmarking table, run `cargo all --release --time`. If 
 ```sh
 ./test.sh
 ```
-
-To run tests for a specific day, append `--bin <day>`, e.g. `cargo test --bin 01`. You can further scope it down to a specific part, e.g. `cargo test --bin 01 part_one`.
 
 ### Format code
 
@@ -181,12 +179,15 @@ Go to the leaderboard page of the year you want to track and click _Private Lead
 
 Go to the _Secrets_ tab in your repository settings and create the following secrets:
 
-- `AOC_ENABLED`: This variable controls whether the workflow is enabled. Set it to `true` to enable the progress tracker.
 - `AOC_USER_ID`: Go to [this page](https://adventofcode.com/settings) and copy your user id. It's the number behind the `#` symbol in the first name option. Example: `3031`.
 - `AOC_YEAR`: the year you want to track. Example: `2021`.
 - `AOC_SESSION`: an active session[^2] for the advent of code website. To get this, press F12 anywhere on the Advent of Code website to open your browser developer tools. Look in your Cookies under the Application or Storage tab, and copy out the `session` cookie.
 
 ✨ You can now run this action manually via the _Run workflow_ button on the workflow page. If you want the workflow to run automatically, uncomment the `schedule` section in the `readme-stars.yml` workflow file or add a `push` trigger.
+
+Go to the _Variables_ tab in your repository settings and create the following variable:
+
+- `AOC_ENABLED`: This variable controls whether the workflow is enabled. Set it to `true` to enable the progress tracker.
 
 ### Check code formatting / clippy lints in CI
 

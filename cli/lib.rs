@@ -16,6 +16,7 @@ pub const ANSI_RESET: &str = "\x1b[0m";
 pub fn get_challenge_dir(day: u8, year: u16) -> PathBuf {
     PathBuf::from_iter([
         env!("CARGO_MANIFEST_DIR"),
+        "challenges",
         &format!("{year}"),
         &format!("day{day:02}"),
     ])

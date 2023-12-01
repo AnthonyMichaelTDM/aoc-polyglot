@@ -1,31 +1,50 @@
+#!/bin/sh
+
 # utility script that runs the test suites of the various programming languages supported by the project
+# for every solution
 # usage: ./test.sh
 
-# Rust
-if command -v cargo &> /dev/null
-then
-    echo "Running cargo test"
-    cargo test
-else
-    echo "cargo not installed, skipping rust test suite"
-fi
+CHALLENGE_DIR=./challenges
 
-# Zig
-if command -v zig &> /dev/null
-then
-    echo "Running zig test"
-    zig test --color on .
-else
-    echo "zig not installed, skipping zig test suite"
-fi
+# Iterate over year directories
+for year_dir in $CHALLENGE_DIR/*; do
+    case $year_dir in 
+        $CHALLENGE_DIR/[0-9][0-9][0-9][0-9])
+            ;;
+        *)
+            echo "Skipping $year_dir"
+            continue # skip non-year directories
+            ;;
+    esac
 
-# Python
-if command -v pytest &> /dev/null
-then
-    echo "Running pytest"
-    pytest .
-else
-    echo "pytest not installed, skipping python test suite"
-fi
+    # Iterate over day directories
+    for day_dir in $year_dir/*; do
+        case $day_dir in 
+            $year_dir/day[0-9][0-9])
+                ;;
+            *)
+                echo "Skipping $day_dir"
+                continue # skip non-day directories
+                ;;
+        esac
 
-# TODO: run other test suites here
+        # Iterate over programming language directories
+        for lang_dir in $day_dir/*; do
+            if [ ! -d "$lang_dir" ]; then
+                continue # skip non-directories
+            fi
+            if [ ! -f "$lang_dir/test.sh" ]; then
+                continue # skip directories without test.sh
+            fi
+
+            # Run tests for each language
+            cd $lang_dir
+            if [ -f "test.sh" ]; then
+                echo "Running test.sh for $lang_dir"
+                $SHELL test.sh
+            fi
+            cd ../../../../
+        done # end for
+    done # end for
+
+done
