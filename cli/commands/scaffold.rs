@@ -1,6 +1,12 @@
+use std::{fs::OpenOptions, path};
+
+use anyhow::{bail, Result};
 use tap::Tap as _;
 
-use crate::langs::{Solution, SupportedLanguage};
+use crate::{
+    get_challenge_dir,
+    langs::{Solution, SupportedLanguage},
+};
 
 /// Handle the `scaffold` subcommand.
 ///
@@ -14,27 +20,27 @@ pub fn handle(day: u8, year: u16, language: Option<SupportedLanguage>) -> anyhow
         Some(language) => {
             let _ = language
                 .scaffold(day, year)
-                .map_err(|e| anyhow::anyhow!("🎄 Failed to create solution scaffold: {e}"))?;
-            println!("🎄 Successfully created solution scaffold.");
+                .map_err(|e| anyhow::anyhow!("Failed to create solution scaffold: {e}"))?;
+            println!("Successfully created solution scaffold.");
         }
         None => {
             let rust = SupportedLanguage::Rust
                 .scaffold(day, year)
                 .tap(|result| match result {
-                    Ok(_) => println!("🎄 Successfully created solution scaffold."),
-                    Err(e) => eprintln!("🎄 Failed to create solution scaffold: {e}"),
+                    Ok(_) => println!("Successfully created solution scaffold."),
+                    Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
                 });
             let python = SupportedLanguage::Python
                 .scaffold(day, year)
                 .tap(|result| match result {
-                    Ok(_) => println!("🎄 Successfully created solution scaffold."),
-                    Err(e) => eprintln!("🎄 Failed to create solution scaffold: {e}"),
+                    Ok(_) => println!("Successfully created solution scaffold."),
+                    Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
                 });
             let zig = SupportedLanguage::Zig
                 .scaffold(day, year)
                 .tap(|result| match result {
-                    Ok(_) => println!("🎄 Successfully created solution scaffold."),
-                    Err(e) => eprintln!("🎄 Failed to create solution scaffold: {e}"),
+                    Ok(_) => println!("Successfully created solution scaffold."),
+                    Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
                 });
 
             if rust.is_err() && python.is_err() && zig.is_err() {
@@ -43,6 +49,8 @@ pub fn handle(day: u8, year: u16, language: Option<SupportedLanguage>) -> anyhow
         }
     };
 
+    safe_create_empty_input_and_example(day, year)?;
+
     println!("---");
     println!(
         "🎄 Type `cargo solve {day:02} -y {year} -l {}` to run your solution.",
@@ -50,4 +58,61 @@ pub fn handle(day: u8, year: u16, language: Option<SupportedLanguage>) -> anyhow
     );
 
     Ok(())
+}
+
+fn safe_create_empty_input_and_example(day: u8, year: u16) -> Result<()> {
+    let input_path = get_challenge_dir(day, year).join(path::Path::new("input.txt"));
+    let example_path = get_challenge_dir(day, year).join(path::Path::new("example.txt"));
+
+    match OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&input_path)
+    {
+        Ok(_) => {
+            println!("Created empty input file \"{}\"", input_path.display());
+        }
+        Err(e) => {
+            if e.kind() == std::io::ErrorKind::AlreadyExists {
+                eprintln!(
+                    "Input file \"{}\" already exists, skipping.",
+                    input_path.display()
+                );
+            } else {
+                bail!(
+                    "Failed to create input file \"{}\": {}",
+                    input_path.display(),
+                    e
+                );
+            }
+        }
+    }
+
+    match OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&example_path)
+    {
+        Ok(_) => {
+            println!("Created empty example file \"{}\"", example_path.display());
+
+            return Ok(());
+        }
+        Err(e) => {
+            if e.kind() == std::io::ErrorKind::AlreadyExists {
+                eprintln!(
+                    "Example file \"{}\" already exists, skipping.",
+                    example_path.display()
+                );
+
+                return Ok(());
+            } else {
+                bail!(
+                    "Failed to create example file \"{}\": {}",
+                    example_path.display(),
+                    e
+                );
+            }
+        }
+    }
 }
