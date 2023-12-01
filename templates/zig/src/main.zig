@@ -10,14 +10,33 @@ fn part_two(input: []const u8) ?u32 {
     return null;
 }
 
-pub fn main() void {
+const part = enum {
+    part_one = 1,
+    part_two = 2,
+}
+
+pub fn main() !void {
+    const stdout = std.io.getStdOut().writer();
     const input = @embedFile("data/input.txt");
 
-    var part_one_result = part_one(input);
-    std.debug.print("{?}\n", .{part_one_result});
-    std.debug.print("\n=================\n\n", .{}); // separate the parts
-    var part_two_result = part_two(input);
-    std.debug.print("{?}\n", .{part_two_result});
+    var args = std.process.args();
+    _ = args.skip(); // skip the program name
+    const part = args.next().?[0];
+
+    switch (part) {
+        '1' => {
+            const part_one_result = part_one(input);
+            try stdout.print("{}\n", .{part_one_result.?});
+        },
+        '2' => {
+            const part_two_result = part_two(input);
+            try stdout.print("{}\n", .{part_two_result.?});
+        },
+        else => {
+            std.debug.print("Please specify a part to run (1 or 2)\n", .{});
+            std.process.exit(1);
+        },
+    }
 }
 
 test "part 1" {

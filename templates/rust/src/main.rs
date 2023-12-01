@@ -1,8 +1,8 @@
-fn part_one(input: &str) -> Option<u32> {
+fn part_one(_input: &str) -> Option<u32> {
     todo!("your code here");
 }
 
-fn part_two(input: &str) -> Option<u32> {
+fn part_two(_input: &str) -> Option<u32> {
     todo!("your code here");
 }
 
@@ -27,11 +27,19 @@ mod tests {
 
 // the main function, you do not need to edit this
 fn main() {
-    // include macro
+    // input text
     let input = include_str!("../../input.txt");
 
-    // run the parts
-    println!("{}", part_one(&input).unwrap_or_default());
-    println!("\n=================\n"); // separate the parts
-    println!("{}", part_two(&input).unwrap_or_default());
+    // the single argument is what "part" to run, and must either be "1" or "2"
+    match std::env::args().nth(1).as_deref() {
+        Some("1") => {
+            println!("{}", part_one(&input).unwrap());
+        }
+        Some("2") => {
+            println!("{}", part_two(&input).unwrap());
+        }
+        _ => {
+            eprintln!("Please specify a part to run (1 or 2)");
+        }
+    }
 }

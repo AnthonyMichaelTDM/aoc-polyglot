@@ -101,6 +101,8 @@ In order to submit part of a solution for checking, append the `--submit <part>`
 
 ### Run all solutions
 
+Not yet implemented
+
 ```sh
 cargo all
 
@@ -118,6 +120,9 @@ cargo all
 This runs all solutions sequentially and prints output to the command-line. Same as for the `solve` command, `--release` controls whether real inputs will be used.
 
 #### Update readme benchmarks
+
+> [!DISCLAIMER]
+> Benchmark times include overhead like starting the process, reading the input file, etc., and therefore may not be representative of the actual execution time of your solution.
 
 The template can output a table with solution times to your readme. Please note that these are not "scientific" benchmarks, understand them as a fun approximation. 😉
 
@@ -143,7 +148,7 @@ In order to generate a benchmarking table, run `cargo all --release --time`. If 
 
 ### Read puzzle description in terminal
 
-> **Note**  
+> [!IMPORTANT]
 > This command requires [installing the aoc-cli crate](#configure-aoc-cli-integration).
 
 ```sh

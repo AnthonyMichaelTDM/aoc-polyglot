@@ -1,3 +1,4 @@
+import sys
 
 def part_one(input: str) -> int | None:
     # your code here
@@ -11,11 +12,10 @@ def main() -> None:
     with open('../input.txt') as f:
         input = f.read()
 
-    print(f'{part_one(input)}')
-
-    print("\n=================\n") # separate the two parts
-
-    print(f'{part_two(input)}')
+    match sys.argv[1]:
+        case '1': print(f'{part_one(input)}')
+        case '2': print(f'{part_two(input)}')
+        case _ : print('Please specify a part to run (1 or 2)')
 
 if __name__ == '__main__':
     main()

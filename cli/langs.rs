@@ -10,7 +10,7 @@ use anyhow::Result;
 use lazy_static::lazy_static;
 use tera::Tera;
 
-use crate::get_challenge_dir;
+use crate::{get_challenge_dir, Part};
 
 lazy_static! {
     static ref TERA: Tera = Tera::new("templates/**/*").unwrap();
@@ -69,7 +69,7 @@ impl Solution for SupportedLanguage {
             Self::Python => return Ok(()), // python doesn't need to be compiled
             Self::Zig => {
                 command = Command::new("zig");
-                command.args(["build"]);
+                command.args(["build", "-Doptimize=ReleaseSafe"]);
             }
         }
 
@@ -91,20 +91,26 @@ impl Solution for SupportedLanguage {
         Ok(())
     }
 
-    fn run(&self, day: u8, year: u16) -> Result<String> {
+    fn run_part(&self, day: u8, year: u16, part: Part) -> Result<String> {
         let mut command;
         match self {
             Self::Rust => {
                 command = Command::new("cargo");
-                command.args(["run", "--release"]);
+                command.args(["run", "--release", "--", &part.to_string()]);
             }
             Self::Python => {
                 command = Command::new("python");
-                command.args(["main.py"]);
+                command.args(["main.py", &part.to_string()]);
             }
             Self::Zig => {
                 command = Command::new("zig");
-                command.args(["run"]);
+                command.args([
+                    "build",
+                    "run",
+                    "-Doptimize=ReleaseSafe",
+                    "--",
+                    &part.to_string(),
+                ]);
             }
         }
 
@@ -119,51 +125,24 @@ impl Solution for SupportedLanguage {
         // run the command in the solution directory
         let output = command
             .current_dir(working_dir)
-            .stderr(Stdio::inherit())
+            .stderr(Stdio::null())
             .stdout(Stdio::piped())
-            .output()?;
+            .spawn()?;
 
-        // convert the output to a string
-        let output = String::from_utf8(output.stdout)?;
+        // get the output
+        let output = output.wait_with_output()?;
 
-        Ok(output)
-    }
-
-    fn test(&self, day: u8, year: u16) -> Result<String> {
-        let mut command;
-        match self {
-            Self::Rust => {
-                command = Command::new("cargo");
-                command.args(["test"]);
-            }
-            Self::Python => {
-                command = Command::new("pytest");
-            }
-            Self::Zig => {
-                command = Command::new("zig");
-                command.args(["test"]);
-            }
+        // check if the command failed
+        if !output.status.success() {
+            return Err(anyhow::anyhow!(
+                "Failed to run part {part} of solution for day {day} of year {year}"
+            ));
         }
 
-        let working_dir = self.get_working_dir(day, year).map_err(|_| {
-            anyhow::anyhow!(
-                "Could not find solution directory for day {} of year {}",
-                day,
-                year
-            )
-        })?;
-
-        // run the command in the solution directory
-        let output = command
-            .current_dir(working_dir)
-            .stderr(Stdio::inherit())
-            .stdout(Stdio::piped())
-            .output()?;
-
         // convert the output to a string
         let output = String::from_utf8(output.stdout)?;
 
-        Ok(output)
+        Ok(output.trim().to_string())
     }
 
     fn scaffold(&self, day: u8, year: u16) -> Result<()> {
@@ -233,21 +212,25 @@ pub trait Solution {
     ///
     /// returns an error if the solution directory does not exist, or if there is an error compiling the solution.
     fn compile(&self, day: u8, year: u16) -> Result<()>;
-    /// run the solution for a given day and year.
+    /// run the solutions for a given day and year.
     ///
-    /// TODO: add support for passing arguments to the solution, and for running individual parts of the solution.
-    ///
-    /// # Errors
-    ///
-    /// returns an error if the solution directory does not exist, or if there is an error running the solution.
-    fn run(&self, day: u8, year: u16) -> Result<String>;
-    /// run the tests for the solution for a given day and year.
-    /// (run the solution with example inputs)
+    /// TODO: add support for passing arguments to the solution.
     ///
     /// # Errors
     ///
     /// returns an error if the solution directory does not exist, or if there is an error running the solution.
-    fn test(&self, day: u8, year: u16) -> Result<String>;
+    fn run_parts(&self, day: u8, year: u16) -> Result<(String, String)> {
+        Ok((
+            self.run_part(day, year, Part::One)?,
+            self.run_part(day, year, Part::Two)?,
+        ))
+    }
+    /// run the solution to the given part for a given day and year.
+    ///
+    /// # Errors
+    ///
+    /// returns an error if the solution directory does not exist, or if there is an error running the solution.
+    fn run_part(&self, day: u8, year: u16, part: Part) -> Result<String>;
     /// scaffold the solution for a given day and year, basically creating a project template for the solution.
     ///
     /// # Errors

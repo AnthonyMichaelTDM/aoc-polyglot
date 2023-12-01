@@ -6,7 +6,7 @@
 - [ ] implement cli subcommands:
   - [x] scaffold
   - [x] download
-  - [ ] solve
+  - [x] solve
   - [x] read
   - [ ] all
 - [x] create and update `lint.sh`, `fmt.sh`, `test.sh` to work on all supported languages
@@ -14,12 +14,15 @@
   - [x] zig
   - [x] python
 - [ ] make `lint.sh`, `fmt.sh`, `test.sh` navigate through solution directories and run the appropriate commands in each
+  - [ ] lint
+  - [ ] fmt
+  - [x] test
 - [x] CI for all supported languages
   - [x] rust
   - [x] zig
   - [x] python
 - [x] re-organize repo structure to better support multiple languages
-- [ ] update the cli tool to support multiple languages, and multiple years
+- [x] update the cli tool to support multiple languages, and multiple years
 - [x] create templates for supported languages, which the tool can use to generate new days
   - [x] use tera as a templating engine
   - [x] rust
