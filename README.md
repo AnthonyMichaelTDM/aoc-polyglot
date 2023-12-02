@@ -52,6 +52,9 @@ This template supports all major OS (macOS, Linux, Windows).
 
 ## Usage
 
+> [!TIP]
+> in most cases, you can omit the `-y <year>` argument to default to the current/most recent AoC
+
 ### Scaffold a day
 
 ```sh
@@ -74,12 +77,12 @@ Tip: when editing a solution, `rust-analyzer` will display buttons for running /
 
 ### Download input & description for a day
 
-> **Note**  
+> [!NOTE]  
 > This command requires [installing the aoc-cli crate](#configure-aoc-cli-integration).
 
 ```sh
-# example: `cargo download 1`
-cargo download <day>
+# example: `cargo download 1 -y 2023`
+cargo download <day> -y <year>
 
 # output:
 # [INFO  aoc] 🎄 aoc-cli - Advent of Code command-line tool
@@ -94,7 +97,7 @@ cargo download <day>
 
 ```sh
 # example: `cargo solve 01`
-cargo solve <day>
+cargo solve <day> -y <year> -l <lang>
 
 # output:
 #     Finished dev [unoptimized + debuginfo] target(s) in 0.13s
@@ -103,11 +106,11 @@ cargo solve <day>
 # Part 2: 42 (41.0ns)
 ```
 
-The `solve` command runs your solution against real puzzle inputs. To run an optimized build of your code, append the `--release` flag as with any other rust program.
+The `solve` command runs your solution against real puzzle inputs.
 
-By default, `solve` executes your code once and shows the execution time. If you append the `--time` flag to the command, the runner will run your code between `10` and `10.000` times (depending on execution time of first execution) and print the average execution time.
+By default, `solve` executes your code once and shows the execution time. If you append the `--time` flag to the command, the runner will run your code between `10` and `1,000` times (depending on execution time of first execution) and print the average execution time.
 
-For example, running a benchmarked, optimized execution of day 1 would look like `cargo solve 1 --release --time`. Displayed _timings_ show the raw execution time of your solution without overhead like file reads.
+For example, running a benchmarked execution of your rust solution to day 1 would look like `cargo solve 1 -l rust --time`.
 
 #### Submitting solutions
 
@@ -118,7 +121,8 @@ In order to submit part of a solution for checking, append the `--submit <part>`
 
 ### Run all solutions
 
-Not yet implemented
+> [!NOTE]
+> This feature isn't implemented yet
 
 ```sh
 cargo all
@@ -134,16 +138,16 @@ cargo all
 # Total: 0.20ms
 ```
 
-This runs all solutions sequentially and prints output to the command-line. Same as for the `solve` command, `--release` controls whether real inputs will be used.
+This runs all solutions sequentially and prints output to the command-line.
 
 #### Update readme benchmarks
 
-> [!DISCLAIMER]
+> [!IMPORTANT] 
 > Benchmark times include overhead like starting the process, reading the input file, etc., and therefore may not be representative of the actual execution time of your solution.
 
 The template can output a table with solution times to your readme. Please note that these are not "scientific" benchmarks, understand them as a fun approximation. 😉
 
-In order to generate a benchmarking table, run `cargo all --release --time`. If everything goes well, the command will output "_Successfully updated README with benchmarks._" after the execution finishes.
+In order to generate a benchmarking table, run `cargo all --time`. If everything goes well, the command will output "_Successfully updated README with benchmarks._" after the execution finishes.
 
 ### Run all tests
 
