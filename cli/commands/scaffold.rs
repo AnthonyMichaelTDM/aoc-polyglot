@@ -16,38 +16,35 @@ use crate::{
 pub fn handle(day: u8, year: u16, language: Option<SupportedLanguage>) -> anyhow::Result<()> {
     println!("Creating scaffold for day {day} of year {year}...",);
 
-    match language {
-        Some(language) => {
-            let _ = language
-                .scaffold(day, year)
-                .map_err(|e| anyhow::anyhow!("Failed to create solution scaffold: {e}"))?;
-            println!("Successfully created solution scaffold.");
-        }
-        None => {
-            let rust = SupportedLanguage::Rust
-                .scaffold(day, year)
-                .tap(|result| match result {
-                    Ok(_) => println!("Successfully created solution scaffold."),
-                    Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
-                });
-            let python = SupportedLanguage::Python
-                .scaffold(day, year)
-                .tap(|result| match result {
-                    Ok(_) => println!("Successfully created solution scaffold."),
-                    Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
-                });
-            let zig = SupportedLanguage::Zig
-                .scaffold(day, year)
-                .tap(|result| match result {
-                    Ok(_) => println!("Successfully created solution scaffold."),
-                    Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
-                });
+    if let Some(language) = language {
+        language
+            .scaffold(day, year)
+            .map_err(|e| anyhow::anyhow!("Failed to create solution scaffold: {e}"))?;
+        println!("Successfully created solution scaffold.");
+    } else {
+        let rust = SupportedLanguage::Rust
+            .scaffold(day, year)
+            .tap(|result| match result {
+                Ok(()) => println!("Successfully created solution scaffold."),
+                Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
+            });
+        let python = SupportedLanguage::Python
+            .scaffold(day, year)
+            .tap(|result| match result {
+                Ok(()) => println!("Successfully created solution scaffold."),
+                Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
+            });
+        let zig = SupportedLanguage::Zig
+            .scaffold(day, year)
+            .tap(|result| match result {
+                Ok(()) => println!("Successfully created solution scaffold."),
+                Err(e) => eprintln!("Failed to create solution scaffold: {e}"),
+            });
 
-            if rust.is_err() && python.is_err() && zig.is_err() {
-                anyhow::bail!("Failed to create solution scaffold for any language.");
-            }
+        if rust.is_err() && python.is_err() && zig.is_err() {
+            anyhow::bail!("Failed to create solution scaffold for any language.");
         }
-    };
+    }
 
     safe_create_empty_input_and_example(day, year)?;
 
@@ -70,21 +67,20 @@ fn safe_create_empty_input_and_example(day: u8, year: u16) -> Result<()> {
         .open(&input_path)
     {
         Ok(_) => {
-            println!("Created empty input file \"{}\"", input_path.display());
+            println!("\tCreated empty input file \"{}\"", input_path.display());
+        }
+        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {
+            eprintln!(
+                "\tInput file \"{}\" already exists, skipping.",
+                input_path.display()
+            );
         }
         Err(e) => {
-            if e.kind() == std::io::ErrorKind::AlreadyExists {
-                eprintln!(
-                    "Input file \"{}\" already exists, skipping.",
-                    input_path.display()
-                );
-            } else {
-                bail!(
-                    "Failed to create input file \"{}\": {}",
-                    input_path.display(),
-                    e
-                );
-            }
+            bail!(
+                "Failed to create input file \"{}\": {}",
+                input_path.display(),
+                e
+            );
         }
     }
 
@@ -94,25 +90,24 @@ fn safe_create_empty_input_and_example(day: u8, year: u16) -> Result<()> {
         .open(&example_path)
     {
         Ok(_) => {
-            println!("Created empty example file \"{}\"", example_path.display());
-
-            return Ok(());
+            println!(
+                "\tCreated empty example file \"{}\"",
+                example_path.display()
+            );
+        }
+        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {
+            eprintln!(
+                "\tExample file \"{}\" already exists, skipping.",
+                example_path.display()
+            );
         }
         Err(e) => {
-            if e.kind() == std::io::ErrorKind::AlreadyExists {
-                eprintln!(
-                    "Example file \"{}\" already exists, skipping.",
-                    example_path.display()
-                );
-
-                return Ok(());
-            } else {
-                bail!(
-                    "Failed to create example file \"{}\": {}",
-                    example_path.display(),
-                    e
-                );
-            }
+            bail!(
+                "Failed to create example file \"{}\": {}",
+                example_path.display(),
+                e
+            );
         }
     }
+    Ok(())
 }

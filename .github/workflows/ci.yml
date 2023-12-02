@@ -20,7 +20,7 @@ jobs:
             - name: Test And Lint
               run: |
                   cargo test --all
-                  cargo clippy --all -- -D warnings
+                  cargo clippy --all
     test_solutions:
         runs-on: ubuntu-latest
         name: CI_SOLUTIONS

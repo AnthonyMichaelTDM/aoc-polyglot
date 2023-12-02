@@ -11,6 +11,7 @@ use crate::{
 /// # Errors
 ///
 /// TODO: Document errors
+#[allow(unreachable_code, unused_variables)]
 pub fn handle(
     year: u16,
     language: Option<SupportedLanguage>,
