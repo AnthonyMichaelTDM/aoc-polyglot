@@ -48,7 +48,7 @@ jobs:
               with:
                   python-version: 3.11
                   cache: pip
-            - run: pip install -r requirements.txt --upgrade --no-cache-dir
+            - run: pip install -r requirements.txt --upgrade
             - name: Set up Zig
               uses: goto-bus-stop/setup-zig@v2
             - name: Run Tests
