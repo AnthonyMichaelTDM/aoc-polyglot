@@ -10,11 +10,6 @@ fn part_two(input: []const u8) ?u32 {
     return null;
 }
 
-const part = enum {
-    part_one = 1,
-    part_two = 2,
-}
-
 pub fn main() !void {
     const stdout = std.io.getStdOut().writer();
     const input = @embedFile("data/input.txt");
