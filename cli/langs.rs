@@ -10,7 +10,7 @@ use anyhow::Result;
 use lazy_static::lazy_static;
 use tera::Tera;
 
-use crate::{get_challenge_dir, Part};
+use crate::{get_challenge_dir, utils::rust_scaffold_add_to_linked_projects, Part};
 
 lazy_static! {
     static ref TERA: Tera = Tera::new("templates/**/*").unwrap();
@@ -169,6 +169,8 @@ impl Solution for SupportedLanguage {
         options.copy_inside = true;
         fs_extra::dir::copy(template_dir, get_challenge_dir(day, year), &options)?;
 
+        println!("\tCopied template files.");
+
         // if needed, fill out .tera templates
         //  set up the context for the templates
         let mut context = tera::Context::new();
@@ -193,6 +195,29 @@ impl Solution for SupportedLanguage {
             Self::Python | Self::Zig => {}
         }
 
+        println!("\tFilled out templates.");
+
+        // language specific additional scaffolding, ignore any errors
+        match self {
+            Self::Rust => {
+                // edit the vscode settings.json to add the new project to the linked projects
+                let project_path = format!(
+                    "{challenge_dir}/rust/Cargo.toml",
+                    challenge_dir = challenge_dir
+                        .display()
+                        .to_string()
+                        .trim_start_matches(env!("CARGO_MANIFEST_DIR"))
+                );
+
+                match rust_scaffold_add_to_linked_projects(&PathBuf::from(project_path)) {
+                    Ok(()) => {
+                        println!("\tAdded project to linked projects in .vscode/settings.json");
+                    }
+                    Err(e) => eprintln!("\tFailed to add project to linked projects: {e}"),
+                }
+            }
+            Self::Python | Self::Zig => {}
+        }
         Ok(())
     }
 }

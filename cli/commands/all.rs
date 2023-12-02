@@ -11,12 +11,12 @@ use crate::{
 /// # Errors
 ///
 /// TODO: Document errors
-#[allow(unreachable_code)]
+#[allow(unreachable_code, unused_variables)]
 pub fn handle(
-    _year: u16,
-    _language: Option<SupportedLanguage>,
-    _is_release: bool,
-    _is_timed: bool,
+    year: u16,
+    language: Option<SupportedLanguage>,
+    is_release: bool,
+    is_timed: bool,
 ) -> anyhow::Result<()> {
     todo!();
 
@@ -30,7 +30,7 @@ pub fn handle(
         println!("{ANSI_BOLD}Day {day}{ANSI_RESET}");
         println!("------");
 
-        let output = child_commands::run_solution(day, _is_timed, _is_release)?;
+        let output = child_commands::run_solution(day, is_timed, is_release)?;
 
         if output.is_empty() {
             println!("Not solved.");
@@ -40,12 +40,12 @@ pub fn handle(
         }
     }
 
-    if _is_timed {
+    if is_timed {
         let total_millis = timings.iter().map(|x| x.total_nanos).sum::<f64>() / 1_000_000_f64;
 
         println!("\n{ANSI_BOLD}Total:{ANSI_RESET} {ANSI_ITALIC}{total_millis:.2}ms{ANSI_RESET}");
 
-        if _is_release {
+        if is_release {
             match readme_benchmarks::update(timings, total_millis) {
                 Ok(()) => println!("Successfully updated README with benchmarks."),
                 Err(_) => {

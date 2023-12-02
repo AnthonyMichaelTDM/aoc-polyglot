@@ -76,31 +76,25 @@ fn main() -> Result<()> {
             release,
             time,
             language,
-        } => commands::all::handle(year.unwrap_or_else(|| get_year()), language, release, time)?,
+        } => commands::all::handle(year.unwrap_or_else(get_year), language, release, time)?,
         AppArguments::Download { day, year } => {
-            commands::download::handle(day, year.unwrap_or_else(|| get_year()))?
+            commands::download::handle(day, year.unwrap_or_else(get_year))?;
         }
         AppArguments::Read { day, year } => {
-            commands::read::handle(day, year.unwrap_or_else(|| get_year()))?
+            commands::read::handle(day, year.unwrap_or_else(get_year))?;
         }
         AppArguments::Scaffold {
             day,
             year,
             language,
-        } => commands::scaffold::handle(day, year.unwrap_or_else(|| get_year()), language)?,
+        } => commands::scaffold::handle(day, year.unwrap_or_else(get_year), language)?,
         AppArguments::Solve {
             day,
             year,
             time,
             submit,
             language,
-        } => commands::solve::handle(
-            day,
-            year.unwrap_or_else(|| get_year()),
-            language,
-            time,
-            submit,
-        )?,
+        } => commands::solve::handle(day, year.unwrap_or_else(get_year), language, time, submit)?,
     }
 
     Ok(())

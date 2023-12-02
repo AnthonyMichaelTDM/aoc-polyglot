@@ -59,7 +59,7 @@ fn run_solution(
         let start = time::Instant::now();
         let output = language.run_part(day, year, Part::One).unwrap_or_default();
         // let output = language.run_part(day, year, Part::One)?;
-        part_1_ellapsed = time::Duration::from(start.elapsed());
+        part_1_ellapsed = start.elapsed();
         part_1_output = output;
     }
 
@@ -70,13 +70,18 @@ fn run_solution(
         let start = time::Instant::now();
         let output = language.run_part(day, year, Part::Two).unwrap_or_default();
         // let output = language.run_part(day, year, Part::Two)?;
-        part_2_ellapsed = time::Duration::from(start.elapsed());
+        part_2_ellapsed = start.elapsed();
         part_2_output = output;
     }
 
     // if we are timing the solution, benchmark it a number of times (dependent on how long it took to run)
     if time {
         // run a number of times based on how long it took to run the first time, between 10 and 1000 times
+        #[allow(
+            clippy::cast_sign_loss,
+            clippy::cast_precision_loss,
+            clippy::cast_possible_truncation
+        )]
         let num_runs = (1_000.0 / part_1_ellapsed.whole_milliseconds() as f64).max(10.0) as usize;
 
         // time and run part 1
@@ -86,7 +91,7 @@ fn run_solution(
             for _ in 0..num_runs {
                 let _ = language.run_part(day, year, Part::One)?;
             }
-            part_1_ellapsed = time::Duration::from(start.elapsed());
+            part_1_ellapsed = start.elapsed();
         }
 
         // time and run part 2
@@ -96,12 +101,12 @@ fn run_solution(
             for _ in 0..num_runs {
                 let _ = language.run_part(day, year, Part::Two)?;
             }
-            part_2_ellapsed = time::Duration::from(start.elapsed());
+            part_2_ellapsed = start.elapsed();
         }
 
         // calculate the average time per run
-        let part_1_average = part_1_ellapsed / num_runs as u32;
-        let part_2_average = part_2_ellapsed / num_runs as u32;
+        let part_1_average = part_1_ellapsed / u32::try_from(num_runs).unwrap();
+        let part_2_average = part_2_ellapsed / u32::try_from(num_runs).unwrap();
 
         // print the output
         println!(
@@ -127,11 +132,13 @@ fn run_solution(
 }
 
 fn fmt_duration(duration: Duration) -> String {
-    let time_unit_extractors: &[(&str, fn(Duration) -> i128)] = &[
-        ("d", |d| (d.whole_days()) as i128),
-        ("h", |d| (d.whole_hours() % 24) as i128),
-        ("m", |d| (d.whole_minutes() % 60) as i128),
-        ("s", |d| (d.whole_seconds() % 60) as i128),
+    type ChunkUnits = &'static str;
+    type ChunkExtractor = fn(Duration) -> i128;
+    let time_unit_extractors: &[(ChunkUnits, ChunkExtractor)] = &[
+        ("d", |d| i128::from(d.whole_days())),
+        ("h", |d| i128::from(d.whole_hours() % 24)),
+        ("m", |d| i128::from(d.whole_minutes() % 60)),
+        ("s", |d| i128::from(d.whole_seconds() % 60)),
         ("ms", |d| d.whole_milliseconds() % 1000),
         ("μs", |d| d.whole_microseconds() % 1000),
         ("ns", |d| d.whole_nanoseconds() % 1000),
@@ -142,7 +149,7 @@ fn fmt_duration(duration: Duration) -> String {
         .filter_map(|(unit, extract_time_unit)| {
             let value = extract_time_unit(duration);
             if value > 0 {
-                Some(format!("{}{}", value, unit))
+                Some(format!("{value}{unit}"))
             } else {
                 None
             }
