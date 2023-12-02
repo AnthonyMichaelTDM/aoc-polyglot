@@ -1,4 +1,7 @@
 <!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD041 -->
+
+<img src="./.assets/christmas_ferris.png" width="164">
 
 # 🎄 Advent of Code {year}
 
@@ -27,7 +30,21 @@ This template supports all major OS (macOS, Linux, Windows).
 2. (recommended) Install the [rust-analyzer](https://rust-analyzer.github.io/manual.html) extension for your code editor.
 3. (optional) Install a native debugger. If you are using VS Code, [CodeLLDB](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) is a good option.
 
-TODO: add sections for other languages
+### Setup zig 💻
+
+1. Install the [Zig toolchain](https://ziglang.org/download/).
+2. (recommended) Install the [Zig Language Server](https://github.com/zigtools/zls/wiki/Installation) extension for your code editor.
+
+### Setup python 💻
+
+1. Install the [Python toolchain](https://www.python.org/downloads/), I recommend version 3.11 or higher for the `match` statement.
+2. create a virtual environment with `python -m venv .venv` and activate it with `source .venv/bin/activate`. (the [Python])
+3. Install recommended packages with `pip install -r requirements.txt`. (Do this in your virtual environment, so you don't pollute your global python installation.)
+
+### Setting up your Editor (VS Code) 💻
+
+- (recommended) set up separate profiles for each language you're working with ([VS Code Profiles](https://code.visualstudio.com/docs/editor/profiles)). This will allow you to have separate settings for each language, reduce extension clutter, and allow you to use different debuggers for each language.
+- Install the relevant recommended extensions for your language. (`extensions.json`)
 
 ---
 

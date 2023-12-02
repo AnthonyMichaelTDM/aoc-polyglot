@@ -1,0 +1,20 @@
+{
+    "recommendations": [
+        // python specific
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "njqdev.vscode-python-typehint",
+        "kevinrose.vsc-python-indent",
+        "magicstack.magicpython",
+        // rust specific
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb",
+        "jscearcy.rust-doc-viewer",
+        "panicbit.cargo",
+        "serayuzgur.crates",
+        "tamasfe.even-better-toml",
+        "dustypomerleau.rust-syntax",
+        // zig specific
+        "ziglang.vscode-zig"
+    ]
+}

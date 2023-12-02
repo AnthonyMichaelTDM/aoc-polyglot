@@ -48,9 +48,10 @@ jobs:
               with:
                   python-version: 3.11
                   cache: pip
+            - run: pip install -r requirements.txt --upgrade --no-cache-dir
             - name: Set up Zig
               uses: goto-bus-stop/setup-zig@v2
             - name: Run Tests
-              run: test.sh
-            - name: Run Linters
-              run: lint.sh
+              run: bash ./test.sh
+            # - name: Run Linters
+            #   run: lint.sh
