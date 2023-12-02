@@ -1,5 +1,6 @@
 {
     "rust-analyzer.linkedProjects": [
-        "./challenges/2023/day01/rust/Cargo.toml"
-    ],
+        "./challenges/2023/day01/rust/Cargo.toml",
+        "./challenges/2023/day02/rust/Cargo.toml"
+    ]
 }
