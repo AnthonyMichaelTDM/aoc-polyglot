@@ -25,13 +25,11 @@ pub fn build(b: *std.Build) void {
     });
 
     // Add the challenges example.txt and puzzle.txt to the executable.
-    const input_file_data = std.build.FileSource.relative("../input.txt");
     exe.addAnonymousModule("data/input.txt", .{
-        .source_file = input_file_data,
+        .source_file = std.build.FileSource.relative("../input.txt"),
     });
-    const example_file_data = std.build.FileSource.relative("../example.txt");
     exe.addAnonymousModule("data/example.txt", .{
-        .source_file = example_file_data,
+        .source_file = std.build.FileSource.relative("../example.txt"),
     });
 
     // This declares intent for the executable to be installed into the
